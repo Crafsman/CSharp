@@ -13,7 +13,7 @@ namespace MVCMovie.Controllers
     {
         // 
         // GET: /HelloWorld/
-
+        [Route("HelloHome/index")]
         public IActionResult Index()
         {
             return View();
