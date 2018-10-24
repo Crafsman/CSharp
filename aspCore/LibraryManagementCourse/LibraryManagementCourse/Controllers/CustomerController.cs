@@ -18,12 +18,15 @@ namespace LibraryManagementCourse.Controllers
             _customerRepository = customerRepository;
             _bookRepository = bookRepository;
         }
+
+        [Route("Customer")]
         public IActionResult List()
         {
             var customerVM = new List<CustomerViewModel>();
             var customers = _customerRepository.GetAll();
             if (customers.Count() == 0)
                 return View("Empty");
+
             foreach (var customer in customers)
             {
                 customerVM.Add(new CustomerViewModel

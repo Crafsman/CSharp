@@ -68,6 +68,8 @@ namespace LibraryManagementCourse
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            DbInitialize.Seed(app);
         }
     }
 }
