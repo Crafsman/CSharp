@@ -2,7 +2,7 @@
 
 <div class="row orderForm">
     <form asp-controller="Author" asp-action="Create" method="post" class="form-horizontal" role="form">
-        @Html.HiddenFor(x => x.Referer)
+        @Html.HiddenFor(m => m.Referer)
         <h3 class="col-md-offset-2">Create new author</h3>
         <div class="form-group">
             <label asp-for="Author.Name" class="col-md-2 control-label"></label>
