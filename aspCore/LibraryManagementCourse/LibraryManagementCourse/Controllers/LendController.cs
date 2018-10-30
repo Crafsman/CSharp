@@ -19,6 +19,7 @@ namespace LibraryManagementCourse.Controllers
             _customerRePository = customerRepository;
         }
 
+        [Route("Lend")]
         public IActionResult List()
         {
             // Load all varieable books
