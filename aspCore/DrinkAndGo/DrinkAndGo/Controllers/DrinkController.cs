@@ -18,5 +18,11 @@ namespace DrinkAndGo.Controllers
             _drinkRepository = drinkRepository;
             _categoryRepository = categoryRepository;
         }
+
+        public ViewResult List()
+        {
+            var drinks = _drinkRepository.Drinks;
+            return View(drinks);
+        }
     }
 }

@@ -1,0 +1,20 @@
+﻿@using DrinkAndGo.Data.Models
+@model IEnumerable<Drink>
+@{
+    ViewData["Title"] = "List";
+}
+
+<div>
+    <h2>All drinks are shown here</h2>
+</div>
+
+@{
+    foreach (var drink in Model)
+    {
+        <div>
+            <h4>Drink Name: @drink.Name</h4>
+            <p>Price: @drink.Price.ToString("c")</p>
+        </div>
+
+    }
+}

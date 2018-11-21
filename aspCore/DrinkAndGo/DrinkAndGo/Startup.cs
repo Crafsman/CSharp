@@ -32,7 +32,6 @@ namespace DrinkAndGo
             app.UseMvcWithDefaultRoute();
 
 
-
         }
     }
 }
