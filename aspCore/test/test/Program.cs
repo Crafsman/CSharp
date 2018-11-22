@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Slack.Webhooks;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace test
 {
@@ -40,7 +41,7 @@ namespace test
 
     class Program
     {
-        static void Main(string[] args)
+        static void testPostToSlack()
         {
             var slackClient = new SlackClient("https://hooks.slack.com/services/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");
 
@@ -73,6 +74,19 @@ namespace test
                 slackClient.Post(slackMessage);
 
             }
+        }
+
+        static void testTranslate()
+        {
+            ArrayList arrary1 = new ArrayList();
+            int var1 = 10;
+            int var2;
+            arrary1.Add(var1);
+            var2 = (int)arrary1[0];
+        }
+        static void Main(string[] args)
+        {
+
 
         }
     }
