@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,12 +24,64 @@ namespace DownloadFile.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
+            // 1. Read file
             byte[] fileBytes = System.IO.File.ReadAllBytes(@"C:\code\CSharp\aspCore\DownloadFile\DownloadFile\Books\default.zip");
-            string fileName = "default.zip";
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+
+            // 2. Encrypt file Bytes
+            return File(Encrypt(fileBytes), System.Net.Mime.MediaTypeNames.Application.Octet);
             //return new FileStreamResult(stream, "application/pdf");
 
+            //This class is used to return a file from a byte array.
+            //return new FileContentResult(byteArray, "application/pdf");
+
             //return File(@"C:\code\CSharp\aspCore\DownloadFile\DownloadFile\Books\default.pdf", "application/pdf");
+        }
+
+        public static byte[] MD5Hash(byte[] buffer)
+        {
+            StringBuilder hash = new StringBuilder();
+            MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
+            return md5provider.ComputeHash(buffer);
+        }
+
+        static string key { get; set; } = "A!9HHhi%XjjYY4YP2@Nob009X";
+
+        public static byte[] Encrypt(byte[] textBytes)
+        {
+            using (var md5 = new MD5CryptoServiceProvider())
+            {
+                using (var tdes = new TripleDESCryptoServiceProvider())
+                {
+                    tdes.Key = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                    tdes.Mode = CipherMode.ECB;
+                    tdes.Padding = PaddingMode.PKCS7;
+
+                    using (var transform = tdes.CreateEncryptor())
+                    {
+                        return transform.TransformFinalBlock(textBytes, 0, textBytes.Length);
+                        // return Convert.ToBase64String(bytes, 0, bytes.Length);
+                    }
+                }
+            }
+        }
+
+        public static byte[] Decrypt(byte[] cipherBytes)
+        {
+            using (var md5 = new MD5CryptoServiceProvider())
+            {
+                using (var tdes = new TripleDESCryptoServiceProvider())
+                {
+                    tdes.Key = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                    tdes.Mode = CipherMode.ECB;
+                    tdes.Padding = PaddingMode.PKCS7;
+
+                    using (var transform = tdes.CreateDecryptor())
+                    {
+                        return transform.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
+
+                    }
+                }
+            }
         }
 
 
