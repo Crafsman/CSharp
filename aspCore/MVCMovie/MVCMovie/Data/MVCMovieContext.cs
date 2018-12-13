@@ -4,15 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace MVCMovie.Models
+namespace MvcMovie.Models
 {
-    public class MVCMovieContext : DbContext
+    public class MvcMovieContext : DbContext
     {
-        public MVCMovieContext (DbContextOptions<MVCMovieContext> options)
+        public MvcMovieContext (DbContextOptions<MvcMovieContext> options)
             : base(options)
         {
         }
 
-        public DbSet<MVCMovie.Models.Movie> Movie { get; set; }
+        public DbSet<MvcMovie.Models.Movie> Movie { get; set; }
     }
 }

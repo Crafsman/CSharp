@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MVCMovie.Migrations
+namespace MvcMovie.Migrations
 {
     public partial class Initial : Migration
     {
@@ -17,7 +17,9 @@ namespace MVCMovie.Migrations
                     Title = table.Column<string>(nullable: true),
                     ReleaseDate = table.Column<DateTime>(nullable: false),
                     Genre = table.Column<string>(nullable: true),
-                    Price = table.Column<decimal>(nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Rating = table.Column<string>(nullable: true),
+                    Rating2 = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
