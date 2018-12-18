@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Data;
+using Blog.Data.FileManager;
 using Blog.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,6 +45,7 @@ namespace Blog
             });
 
             services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IFileManager, FileManager>();
 
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
         }
@@ -55,20 +57,10 @@ namespace Blog
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            //             app.Run(async (context) =>
-            //             {
-            //                 await context.Response.WriteAsync("Hello World!");
-            //             });
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-            /*
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });*/
+            app.UseStaticFiles();
+
         }
     }
 }
