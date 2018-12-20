@@ -5,7 +5,9 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace DownloadFile.Controllers
 {
@@ -13,28 +15,74 @@ namespace DownloadFile.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private IConfiguration _config;
+        private string _contentRoot;
+        private string _fileRelativePath;
+        public double LatestVersion { get; set; } = 0.0;
+        public ValuesController(IConfiguration config)
+        {
+            _config = config;
+            _contentRoot = config.GetValue<string>(WebHostDefaults.ContentRootKey);
+            _fileRelativePath = config["Path:ReleaseFiles"];
+
+            string productFolder = Path.Combine(_contentRoot, _fileRelativePath);
+
+            if (!Directory.Exists(productFolder))
+            {
+                Directory.CreateDirectory(productFolder);
+            }
+        }
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<double> Get()
         {
-            return new string[] { "value1", "value2" };
+            GetLatestFileVersionName();
+            return LatestVersion;
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
+            var fileName = GetLatestFileVersionName();
+
             // 1. Read file
-            byte[] fileBytes = System.IO.File.ReadAllBytes(@"C:\code\CSharp\aspCore\DownloadFile\DownloadFile\Books\default.zip");
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileName);
 
             // 2. Encrypt file Bytes
-            return File(Encrypt(fileBytes), System.Net.Mime.MediaTypeNames.Application.Octet);
-            //return new FileStreamResult(stream, "application/pdf");
+            return File(Encrypt(fileBytes), System.Net.Mime.MediaTypeNames.Application.Zip);
 
-            //This class is used to return a file from a byte array.
-            //return new FileContentResult(byteArray, "application/pdf");
+        }
 
-            //return File(@"C:\code\CSharp\aspCore\DownloadFile\DownloadFile\Books\default.pdf", "application/pdf");
+        // Retrieve wwwroot/releases folder, and find the latest file
+        private string GetLatestFileVersionName()
+        {
+            string productFolder = Path.Combine(_contentRoot, _fileRelativePath);
+
+            List<double> fileNamesWithoutExtension = new List<double>();
+            string[] fileFullPathLists = Directory.GetFiles(productFolder);
+            string maxFilePath = "";
+            double maxNumber = 0.0;
+            if (fileFullPathLists.Length > 0)
+            {
+                maxFilePath = fileFullPathLists[0];
+            }
+
+            for (int i = 0; i < fileFullPathLists.Length; i++)
+            {
+                string name = Path.GetFileNameWithoutExtension(fileFullPathLists[i]);
+                // ss-0.1
+
+                double number = Convert.ToDouble(name.Substring(name.LastIndexOf('-') + 1));
+                if (number > maxNumber)
+                {
+                    maxFilePath = fileFullPathLists[i];
+                    LatestVersion = number;
+                }
+            }
+
+            return maxFilePath;
         }
 
         public static byte[] MD5Hash(byte[] buffer)

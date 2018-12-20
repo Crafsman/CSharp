@@ -1,13 +1,17 @@
 ﻿@model Post
 
-<h2>@Model.Title</h2>
 
-@if (!string.IsNullOrEmpty(Model.Image))
-{
-    var image_path = $"/Image/{Model.Image}";
-    <img src="@image_path" width="500" />
+<div class="container">
+    <div class="post no-shadow">
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            var image_path = $"/Image/{Model.Image}";
+            <img src="@image_path" />
+            <span class="title">@Model.Title</span>
+        }
+    </div>
 
-}
-<div>
-    <p>@Model.Body</p>
+    <div class="post-body">
+        <p>@Model.Body</p>
+    </div>
 </div>

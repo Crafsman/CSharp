@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,16 @@ namespace DownloadFile
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var contentRoot = configuration.GetValue<string>(WebHostDefaults.ContentRootKey);
+            var fileRelativePath = configuration["Path:ReleaseFiles"];
+
+            string productFolder = Path.Combine(contentRoot, fileRelativePath);
+
+            if (!Directory.Exists(productFolder))
+            {
+                Directory.CreateDirectory(productFolder);
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -40,7 +51,7 @@ namespace DownloadFile
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
