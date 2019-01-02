@@ -1,8 +1,4 @@
-﻿body {
-    margin: 0;
-    background-color: #9ee4ff;
-}
-
+﻿
 a {
     color: white;
     text-decoration: none;
@@ -43,7 +39,7 @@ nav {
     text-shadow: 0 0 8px black;
 }
 
-.container {
+.blog-container {
     max-width: 800px;
     width: 100%;
     margin: auto;
@@ -65,7 +61,7 @@ nav {
 .post-body {
     margin: -5px 5px 0;
     padding: 20px, 5px;
-    background-color: white;
+    background-color: #ebf0f2;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
