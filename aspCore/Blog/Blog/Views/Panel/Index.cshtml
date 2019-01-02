@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<Post>
 
 <h2>Admin page!</h2>
-
+<a asp-controller="Panel" asp-action="Edit">
+    Add New Post
+</a>
 <div>
     <ul>
         @foreach (var post in Model)
