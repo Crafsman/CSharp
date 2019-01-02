@@ -27,9 +27,15 @@ namespace Blog.Migrations
 
                     b.Property<string>("Body");
 
+                    b.Property<string>("Category");
+
                     b.Property<DateTime>("Created");
 
+                    b.Property<string>("Description");
+
                     b.Property<string>("Image");
+
+                    b.Property<string>("Tags");
 
                     b.Property<string>("Title");
 

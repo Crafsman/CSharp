@@ -41,7 +41,8 @@ namespace Blog.Controllers
                 {
                     ID = post.ID,
                     Title = post.Title,
-                    Body = post.Body
+                    Body = post.Body,
+                    CurrentImage = post.Image
                 });
             }
         }
@@ -53,9 +54,14 @@ namespace Blog.Controllers
             {
                 ID = vm.ID,
                 Title = vm.Title,
-                Body = vm.Body,
-                Image = await _fileManager.SaveImage(vm.Image)       // Handle image
+                Body = vm.Body
             };
+
+            if (vm.Image == null)
+                post.Image = vm.CurrentImage;
+            else
+                post.Image = await _fileManager.SaveImage(vm.Image);
+
             if (post.ID > 0)
                 _repo.UpdatePost(post);
             else
