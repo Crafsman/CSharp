@@ -33,7 +33,6 @@ namespace LandonApi.Filters
                 error.Detail = context.Exception.Message;
             }
 
-
             context.Result = new ObjectResult(error)
             {
                 StatusCode = 500
