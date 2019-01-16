@@ -14,9 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using NSwag.AspNetCore;
 using LandonApi.Services;
 using AutoMapper;
 using LandonApi.Infrastructure;
+using Newtonsoft.Json;
 
 namespace LandonApi
 {
@@ -33,35 +35,63 @@ namespace LandonApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
-            services.AddScoped<IRoomService, DefaultRoomService>();
+            services.Configure<HotelOptions>(Configuration);
+            services.Configure<PagingOptions>(
+                Configuration.GetSection("DefaultPagingOptions"));
 
-            // Use in-memeory database for quick dev and testing
+            services.AddScoped<IRoomService, DefaultRoomService>();
+            services.AddScoped<IOpeningService, DefaultOpeningService>();
+            services.AddScoped<IBookingService, DefaultBookingService>();
+            services.AddScoped<IDateLogicService, DefaultDateLogicService>();
+
+            // Use in-memory database for quick dev and testing
             // TODO: Swap out for a real database in production
-            services.AddDbContext<HotelApiDbContext>(options => options.UseInMemoryDatabase("landondb"));
+            services.AddDbContext<HotelApiDbContext>(
+                options => options.UseInMemoryDatabase("landondb"));
 
             services
                 .AddMvc(options =>
                 {
                     options.Filters.Add<JsonExceptionFilter>();
-                    options.Filters.Add<RequireHttpsOrCloseAttribute>();
+                    options.Filters
+                        .Add<RequireHttpsOrCloseAttribute>();
                     options.Filters.Add<LinkRewritingFilter>();
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddRouting(options => options.LowercaseQueryStrings = true);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(options =>
+                {
+                    // These should be the defaults, but we can be explicit:
+                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                    options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
+
+                });
+
+            services
+                .AddRouting(options => options.LowercaseUrls = true);
+
             services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
-                options.ApiVersionReader = new MediaTypeApiVersionReader();
+                options.ApiVersionReader
+                    = new MediaTypeApiVersionReader();
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
-                options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
-            });
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowMyApp", policy => policy.AllowAnyOrigin());
+                options.ApiVersionSelector
+                     = new CurrentImplementationApiVersionSelector(options);
             });
 
-            services.AddAutoMapper(options => options.AddProfile<MappingProfile>());
+            services.AddAutoMapper(
+                options => options.AddProfile<MappingProfile>());
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errorResponse = new ApiError(context.ModelState);
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,16 +100,19 @@ namespace LandonApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwaggerUi3WithApiExplorer(options =>
+                {
+                    options.GeneratorSettings
+                        .DefaultPropertyNameHandling
+                    = NJsonSchema.PropertyNameHandling.CamelCase;
+                });
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                // Http Strict Transport Security
                 app.UseHsts();
             }
 
-            app.UseCors("AllowMyApp");
-            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

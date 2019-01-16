@@ -22,6 +22,7 @@ namespace LandonApi.Controllers
                 Rooms = Link.ToCollection(nameof(RoomsController.GetAllRooms)),
                 Info = Link.To(nameof(InfoController.GetInfo))
             };
+
             return Ok(response);
         }
     }

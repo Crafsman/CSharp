@@ -12,7 +12,7 @@ namespace LandonApi.Controllers
     [ApiController]
     public class InfoController : ControllerBase
     {
-        private HotelInfo _hotelInfo;
+        private readonly HotelInfo _hotelInfo;
 
         public InfoController(IOptions<HotelInfo> hotelInfoWrapper)
         {

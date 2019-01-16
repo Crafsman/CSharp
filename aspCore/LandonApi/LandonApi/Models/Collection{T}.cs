@@ -7,6 +7,6 @@ namespace LandonApi.Models
 {
     public class Collection<T> : Resource
     {
-        public T[] Value { set; get; }
+        public T[] Value { get; set; }
     }
 }

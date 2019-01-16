@@ -18,10 +18,7 @@ namespace LandonApi.Infrastructure
 
         public Link Rewrite(Link original)
         {
-            if (original == null)
-            {
-                return null;
-            }
+            if (original == null) return null;
 
             return new Link
             {

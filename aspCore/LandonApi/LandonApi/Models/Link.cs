@@ -11,7 +11,6 @@ namespace LandonApi.Models
     {
         public const string GetMethod = "GET";
 
-        // Helper function
         public static Link To(string routeName, object routeValues = null)
             => new Link
             {
@@ -33,7 +32,9 @@ namespace LandonApi.Models
         [JsonProperty(Order = -4)]
         public string Href { get; set; }
 
-        [JsonProperty(Order = -3, PropertyName = "rel", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(Order = -3,
+            PropertyName = "rel",
+            NullValueHandling = NullValueHandling.Ignore)]
         public string[] Relations { get; set; }
 
         [JsonProperty(Order = -2,
@@ -42,11 +43,11 @@ namespace LandonApi.Models
         [DefaultValue(GetMethod)]
         public string Method { get; set; }
 
-        // Store the route name before being rewritten by the LinkRewritingFilter
+        // Stores the route name before being rewritten by the LinkRewritingFilter
         [JsonIgnore]
         public string RouteName { get; set; }
 
-        // Store the route parameters before being rewritten by the LinkRewritingFilter
+        // Stores the route parameters before being rewritten by the LinkRewritingFilter
         [JsonIgnore]
         public object RouteValues { get; set; }
     }

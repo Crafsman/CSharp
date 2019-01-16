@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LandonApi.Models
+namespace LandonApi.Infrastructure
 {
-    public class RoomEntity
+    public class SortTerm
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
-        public int Rate { get; set; }
+        public bool Descending { get; set; }
+
+        public bool Default { set; get; }
     }
 }
